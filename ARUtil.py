@@ -16,6 +16,20 @@ class ARFilter(object):
         self.logger = logging.getLogger("default")
         self.logger.setLevel(level=logging.INFO)
 
+    def info_value(self):
+        """
+        信息熵
+        :return:
+        """
+        pass
+
+    def chi_square(self):
+        """
+        卡方
+        :return:
+        """
+        pass
+
     def train_cal_input(self, excel_name='input.csv'):
         """
         AR值筛选
