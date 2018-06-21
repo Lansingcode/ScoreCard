@@ -17,7 +17,7 @@ def file_info(file_path):
         c_type = raw_data[c].dtype
         nc = raw_data[c].size - raw_data[c].notnull().sum()
         info_dict[c] = [c_type, raw_data[c].size, nc]  # 字段类型，数据量，空值个数
-    return info_dict, data
+    return info_dict, raw_data
 
 
 def change_type(df, fea_type_dict):
@@ -33,6 +33,7 @@ def change_type(df, fea_type_dict):
     print('当前数据类型为：')
     for (k, v) in fea_type_dict.items():
         print(k.rjust(15), v[0])
+
     print('字段名称对应数字为：')
     for (n, m) in feature_dict.items():
         print(n, m)
@@ -62,10 +63,10 @@ def split_data(data_to_split):
     data_count = data_to_split.shape[0]
     selected_count = int(data_count * ratio)
     if selected_count > 0:
-        split_data = np.split(data.sample(frac=1), [selected_count], axis=0)
+        splited_data = np.split(data.sample(frac=1), [selected_count], axis=0)
     else:
         return 'Data is too less'
-    return split_data
+    return splited_data
 
 
 if __name__ == '__main__':
