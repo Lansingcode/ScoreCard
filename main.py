@@ -28,31 +28,31 @@ def change_type(df, fea_type_dict):
     :return:
     """
     type_dict = {1: 'float64', 2: 'int64', 3: 'str'}
-    fea_dict = dict(zip(list(range(df.shape[1])), df.columns.values))
+    feature_dict = dict(zip(list(range(df.shape[1])), df.columns.values))
 
     print('当前数据类型为：')
     for (k, v) in fea_type_dict.items():
         print(k.rjust(15), v[0])
     print('字段名称对应数字为：')
-    for (n, m) in feadict.items():
+    for (n, m) in feature_dict.items():
         print(n, m)
     fea_name = int(input('请输入如需要更改数据类型的字段对应的数字：'))
-    if fea_name not in feadict.keys():
+    if fea_name not in feature_dict.keys():
         fea_name = int(input('输入字段名称错误，请重新输入：'))
-        if fea_name not in feadict.keys():
+        if fea_name not in fea_dict.keys():
             pass
-    fea_name = fea_dict[fea_name]
+    fea_name = feature_dict[fea_name]
 
     target_type = int(input('请输入目标类型对应的数字(1: 浮点型(float64)，2: 整型(int64)，3: 字符型(str)：'))
     if target_type not in type_dict.keys():
         target_type = int(input('请输入目标类型对应的数字(1: 浮点型(float64)，2: 整型(int64)，3: 字符型(str)：'))
         if target_type not in type_dict.keys():
             pass
-    type = type_dict[target_type]
-    df[fea_name] = df[fea_name].astype(type)
+    target_type = type_dict[target_type]
+    df[fea_name] = df[fea_name].astype(target_type)
 
 
-def data_split(data_to_split):
+def split_data(data_to_split):
     """
     数据分割
     :param data_to_split:带分割数据
@@ -71,11 +71,11 @@ def data_split(data_to_split):
 if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
-    feadict, data = file_info(path)
+    fea_dict, data = file_info(path)
 
-    change_type(data, feadict)
+    change_type(data, fea_dict)
     print(data.dtypes)
 
-    t = data_split(data)
+    t = split_data(data)
     print(t[0].shape)
     print(t[1].shape)
