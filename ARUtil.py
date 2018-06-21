@@ -204,8 +204,7 @@ class ARFilter(object):
             is_contain_empty_value, empty_col_list = self.is_contain_empty_value(file_dict)
             if is_contain_empty_value:
                 self.logger.info("当前存在缺失值")
-                is_fill_empty = self.console_input(prompt="是否需要填充数据？1：是，其他值：否", if_value=["1"], else_value=[],
-                                                   if_rtn=True, else_rtn=False)
+                is_fill_empty = self.console_input(prompt="是否需要填充数据？1：是，其他值：否", if_value=["1"], else_value=[],if_rtn=True, else_rtn=False)
                 if is_fill_empty:
                     for col in empty_col_list:
                         fill_value = input("请输入列" + col + "待填充的数据：")
