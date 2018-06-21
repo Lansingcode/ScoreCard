@@ -85,7 +85,7 @@ class WOE:
 
     def combined_iv(self, X, y, masks, event=1):
         """
-        calcute the information vlaue of combination features
+        calcute the information value of combination features
         :param X: 2-D numpy array explanatory features which should be discreted already
         :param y: 1-D numpy array target variable
         :param masks: 1-D numpy array of masks stands for which features are included in combination,
