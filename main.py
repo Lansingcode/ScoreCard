@@ -4,6 +4,7 @@ __author__ = 'xujia'
 import pandas as pd
 import numpy as np
 import binning
+import modeling
 
 
 def file_info(file_path):
@@ -82,4 +83,7 @@ if __name__ == '__main__':
     # print(t[0].shape)
     # print(t[1].shape)
     binning.auto_binning(data, 'Label', 'SepalLength', 10)
+    binning.auto_binning(data, 'Label', 'PetalLength', 10)
+    binning.auto_binning(data, 'Label', 'PetalWidth', 10)
     print(data)
+    print(modeling.model(data,['SepalLength_woe','PetalLength_woe','PetalWidth_woe'],'Label'))

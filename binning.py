@@ -48,4 +48,7 @@ def auto_binning(df, target_name, feature_name, max_bin_count):
     woe = np.log((d2.mean().Y / (1 - d2.mean().Y)) / (good / bad))
     woe_dict = woe.to_dict()
     woe_values = sorted(list(woe_dict.values()))
-    df[feature_name + '_woe'] = d1['Bucket'].apply(lambda x: woe_dict[x]).replace(np.inf, woe_values[-2])
+    print(woe_values)
+    # 如果存在woe为inf情况，将其替换为不为inf的最大值加一
+    df[feature_name + '_woe'] = d1['Bucket'].apply(lambda x: woe_dict[x]).replace(np.inf, woe_values[-2] + 1).replace(
+        -np.inf, woe_values[1] - 1)

@@ -2,13 +2,10 @@
 import pandas as pd
 import numpy as np
 import logging
-# import sys
-# reload(sys)
-# sys.setdefaultencoding('utf8')
+from scipy import stats
 
 
 class ARFilter(object):
-
     def __init__(self, threshold=0.05, dest_var='y'):
         self.threshold = threshold
         self.dest_var = dest_var
@@ -96,7 +93,7 @@ class ARFilter(object):
                 bad_count += 1.0
             else:
                 good_count += 1.0
-            val = abs(bad_count/total_bad_count - good_count/total_good_count)
+            val = abs(bad_count / total_bad_count - good_count / total_good_count)
             max_ks = max(max_ks, val)
         return max_ks
 
@@ -154,7 +151,7 @@ class ARFilter(object):
         for col in data.columns.values:
             if col == 'y':
                 continue
-            empty_ratio = (data[col].shape[0] - data[col].count())/data[col].shape[0]
+            empty_ratio = (data[col].shape[0] - data[col].count()) / data[col].shape[0]
             if empty_ratio >= empty_rate_threshold:
                 self.logger.info("变量：" + col + "缺失率为" + str(empty_ratio) + ",高于阈值：" + str(empty_rate_threshold))
                 data = data.drop(col, axis=1)
@@ -204,7 +201,8 @@ class ARFilter(object):
             is_contain_empty_value, empty_col_list = self.is_contain_empty_value(file_dict)
             if is_contain_empty_value:
                 self.logger.info("当前存在缺失值")
-                is_fill_empty = self.console_input(prompt="是否需要填充数据？1：是，其他值：否", if_value=["1"], else_value=[],if_rtn=True, else_rtn=False)
+                is_fill_empty = self.console_input(prompt="是否需要填充数据？1：是，其他值：否", if_value=["1"], else_value=[],
+                                                   if_rtn=True, else_rtn=False)
                 if is_fill_empty:
                     for col in empty_col_list:
                         fill_value = input("请输入列" + col + "待填充的数据：")
@@ -228,6 +226,4 @@ def run():
 
 
 if __name__ == "__main__":
-
     run()
-
