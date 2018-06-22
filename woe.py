@@ -80,7 +80,6 @@ class WOE:
                 woe = woe_dict[k]
                 res[:, idx][np.where(res[:, idx] == k)[0]] = woe * 1.0
             idx += 1
-
         return res
 
     def combined_iv(self, X, y, masks, event=1):
@@ -180,3 +179,13 @@ class WOE:
     @WOE_MAX.setter
     def WOE_MAX(self, woe_max):
         self._WOE_MAX = woe_max
+
+if __name__ == '__main__':
+    # path=input('Please input the file path: ')
+    path = 'iris.csv'
+    raw_data = pd.read_csv(path)
+    # print(raw_data)
+    woe=WOE()
+    # woe_result=woe.woe_single_x(x=raw_data,'SepalLength')
+    ret=pd.cut(raw_data['SepalLength'],5)
+    print(ret)
