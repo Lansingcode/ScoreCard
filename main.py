@@ -61,7 +61,8 @@ def split_data(data_to_split):
     :param data_to_split:带分割数据
     :return: （数据集1，数据集2）
     """
-    ratio = float(input('请输入数据分割比例：'))
+    # ratio = float(input('请输入数据分割比例：'))
+    ratio = 0.8
     data_count = data_to_split.shape[0]
     selected_count = int(data_count * ratio)
     if selected_count > 0:
@@ -79,11 +80,12 @@ if __name__ == '__main__':
     # change_type(data, fea_dict)
     # print(data.dtypes)
 
-    # t = split_data(data)
     # print(t[0].shape)
     # print(t[1].shape)
     binning.auto_binning(data, 'Label', 'SepalLength', 10)
     binning.auto_binning(data, 'Label', 'PetalLength', 10)
     binning.auto_binning(data, 'Label', 'PetalWidth', 10)
-    print(data)
-    print(modeling.model(data,['SepalLength_woe','PetalLength_woe','PetalWidth_woe'],'Label'))
+    data1, data2 = split_data(data)
+    model = modeling.model(data1, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    predict_score = modeling.score_trans(data2[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 0.5,100, 10)
+    print(list(zip(data2['Label'].values, predict_score)))
