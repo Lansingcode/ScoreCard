@@ -3,6 +3,7 @@ __author__ = 'xujia'
 
 import pandas as pd
 import numpy as np
+import binning
 
 
 def file_info(file_path):
@@ -73,10 +74,12 @@ if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
     fea_dict, data = file_info(path)
+    data = data.fillna(0.0)
+    # change_type(data, fea_dict)
+    # print(data.dtypes)
 
-    change_type(data, fea_dict)
-    print(data.dtypes)
-
-    t = split_data(data)
-    print(t[0].shape)
-    print(t[1].shape)
+    # t = split_data(data)
+    # print(t[0].shape)
+    # print(t[1].shape)
+    binning.auto_binning(data, 'Label', 'SepalLength', 10)
+    print(data)
