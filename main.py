@@ -88,9 +88,10 @@ if __name__ == '__main__':
     binning.auto_binning(data, 'Label', 'PetalWidth', 10)
     train_data, test_data = split_data(data)
     model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 0.5, 100, 10)
+    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model,
+                                         0.5, 100, 10)
     print(list(zip(test_data['Label'].values, predict_score)))
 
-    auc = evaluate.auc(model, test_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
     print("au值: " + str(auc))
-    evaluate.roc(model, test_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
