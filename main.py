@@ -4,6 +4,7 @@ __author__ = 'xujia'
 import pandas as pd
 import numpy as np
 import binning
+import evaluate
 import modeling
 
 
@@ -85,7 +86,11 @@ if __name__ == '__main__':
     binning.auto_binning(data, 'Label', 'SepalLength', 10)
     binning.auto_binning(data, 'Label', 'PetalLength', 10)
     binning.auto_binning(data, 'Label', 'PetalWidth', 10)
-    data1, data2 = split_data(data)
-    model = modeling.model(data1, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    predict_score = modeling.score_trans(data2[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 0.5,100, 10)
-    print(list(zip(data2['Label'].values, predict_score)))
+    train_data, test_data = split_data(data)
+    model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 0.5, 100, 10)
+    print(list(zip(test_data['Label'].values, predict_score)))
+
+    auc = evaluate.auc(model, test_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    print("auc: " + str(auc))
+    evaluate.roc(model, test_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
