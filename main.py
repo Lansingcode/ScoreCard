@@ -92,5 +92,5 @@ if __name__ == '__main__':
     print(list(zip(test_data['Label'].values, predict_score)))
 
     auc = evaluate.auc(model, test_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    print("auc: " + str(auc))
+    print("au值: " + str(auc))
     evaluate.roc(model, test_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
