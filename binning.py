@@ -52,7 +52,58 @@ def auto_binning(df, target_name, feature_name, max_bin_count):
     woe_values = sorted(list(woe_dict.values()))
     print(woe_values)
     # 如果存在woe为inf情况，将其替换为不为inf的最大值加一
-    df[feature_name + '_woe'] = d1['Bucket'].apply(lambda x: woe_dict[x])\
-                                            .replace(np.inf, woe_values[-2] + 1)\
-                                            .replace(-np.inf, woe_values[1] - 1)
-    # return woe_dict
+    df[feature_name + '_woe'] = d1['Bucket'].apply(lambda x: woe_dict[x]) \
+        .replace(np.inf, woe_values[-2] + 1) \
+        .replace(-np.inf, woe_values[1] - 1)
+
+
+def chi2(A):
+    ''' Compute the Chi-Square value '''
+    m, k = A.shape  # 行数 列数
+
+    R = A.sum(axis=1)  # 行求和结果
+    C = A.sum(axis=0)  # 列求和结果
+    N = A.sum()  # 总和
+
+    res = 0
+    for i in range(m):
+        for j in range(k):
+            Eij = 1.0 * R[i] * C[j] / N
+            if Eij != 0:
+                res = 1.0 * res + (A[i][j] - Eij) ** 2 / Eij
+    return res
+
+
+def chi_merge(df, fea_name, target_name, dis_count):
+    fea_count = df[[fea_name, target_name]].copy().groupby([fea_name, target_name]).size().unstack().fillna(0.0)
+    while fea_count.shape[0] > dis_count:
+        chi_list = []
+        for i in range(fea_count.shape[0] - 1):
+            chi_value = chi2(fea_count.iloc[i:i + 2].values)
+            chi_list.append([fea_count.index[i], chi_value])
+
+        chi_min_index = np.argmin(np.array(chi_list)[:, 1])
+        if chi_min_index == len(chi_list) - 1:
+            current_fea = chi_list[chi_min_index][0]
+            fea_count.loc[current_fea] = fea_count.loc[current_fea:].sum(axis=0)
+            fea_count = fea_count.loc[:current_fea].copy()
+        else:
+            current_fea = chi_list[chi_min_index][0]
+            next_fea = chi_list[chi_min_index + 1][0]
+            fea_count.loc[current_fea] = fea_count.loc[current_fea] + fea_count.loc[next_fea]
+            fea_count.drop([next_fea], inplace=True)
+            chi_list.remove(chi_list[chi_min_index + 1])
+    print(fea_count)
+
+
+def discrete(path):
+    df = pd.read_csv(path)
+    target_name = df.columns[-1]
+    fea_names = df.columns[0:-1]
+    dis_count = 2
+    for f in fea_names:
+        chi_merge(df, f, target_name, dis_count)
+
+
+if __name__ == '__main__':
+    discrete('iris.csv')
