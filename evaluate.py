@@ -13,8 +13,8 @@ def auc(model, test_data):
     :param target:
     :return:
     """
-    predict_value = model.predict_proba(test_data.ix[:,0:-1])[:, 1]
-    return metrics.roc_auc_score(test_data.ix[:,-1], predict_value)
+    predict_value = model.predict_proba(test_data.ix[:, 0:-1])[:, 1]
+    return metrics.roc_auc_score(test_data.ix[:, -1], predict_value)
 
 
 def roc(model, test_data):
@@ -26,8 +26,8 @@ def roc(model, test_data):
     :param target:
     :return:
     """
-    predict_value = model.predict_proba(test_data.ix[:,0:-1])[:, 1]
-    fpr, tpr, thresholds = metrics.roc_curve(test_data.ix[:,-1], predict_value)
+    predict_value = model.predict_proba(test_data.ix[:, 0:-1])[:, 1]
+    fpr, tpr, thresholds = metrics.roc_curve(test_data.ix[:, -1], predict_value)
     roc_auc = metrics.auc(fpr, tpr)
     plt.figure()
     plt.plot(fpr, tpr, label='data1, AUC = %0.2f' % roc_auc)
