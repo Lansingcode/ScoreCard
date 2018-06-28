@@ -28,7 +28,7 @@ def equal_frequency_binning(df, fea_name, bin_count):
     df[fea_name + '_f'] = pd.cut(df[fea_name], bin_count)
 
 
-def auto_binning(df, target_name, feature_name, max_bin_count):
+def auto_binning(df, feature_name, target_name, max_bin_count):
     """
     自动分箱
     :param df:
@@ -58,7 +58,11 @@ def auto_binning(df, target_name, feature_name, max_bin_count):
 
 
 def chi2(A):
-    ''' Compute the Chi-Square value '''
+    """
+    计算卡方值
+    :param A:需要计算卡方的两行数据
+    :return: 卡方值
+    """
     m, k = A.shape  # 行数 列数
 
     R = A.sum(axis=1)  # 行求和结果
@@ -75,6 +79,14 @@ def chi2(A):
 
 
 def chi_merge(df, fea_name, target_name, dis_count):
+    """
+    chiMerge的主算法
+    :param df:数据，dataframe格式
+    :param fea_name:需要进行分段的特征名称
+    :param target_name:目标变量名称
+    :param dis_count:最大分组数
+    :return: 分割点
+    """
     fea_count = df[[fea_name, target_name]].copy().groupby([fea_name, target_name]).size().unstack().fillna(0.0)
     while fea_count.shape[0] > dis_count:
         chi_list = []
@@ -94,6 +106,7 @@ def chi_merge(df, fea_name, target_name, dis_count):
             fea_count.drop([next_fea], inplace=True)
             chi_list.remove(chi_list[chi_min_index + 1])
     print(fea_count)
+    return fea_count
 
 
 def discrete(path):

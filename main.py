@@ -6,6 +6,8 @@ import numpy as np
 import binning
 import evaluate
 import modeling
+import woe
+import math
 
 
 def file_info(file_path):
@@ -83,15 +85,32 @@ if __name__ == '__main__':
 
     # print(t[0].shape)
     # print(t[1].shape)
-    binning.auto_binning(data, 'Label', 'SepalLength', 10)
-    binning.auto_binning(data, 'Label', 'PetalLength', 10)
-    binning.auto_binning(data, 'Label', 'PetalWidth', 10)
-    train_data, test_data = split_data(data)
-    model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model,
-                                         0.5, 100, 10)
-    print(list(zip(test_data['Label'].values, predict_score)))
+    # binning.auto_binning(data, 'SepalLength','Label', 10)
+    # binning.auto_binning(data, 'PetalLength','Label', 10)
+    # binning.auto_binning(data, 'PetalWidth','Label',  10)
+    # train_data, test_data = split_data(data)
+    # model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    # predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model,
+    #                                      0.5, 100, 10)
+    # print(list(zip(test_data['Label'].values, predict_score)))
+    #
+    # auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
+    # print("au值: " + str(auc))
+    # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
 
-    auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
-    print("au值: " + str(auc))
-    evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
+    bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
+    bin_index = bins.index.values.astype(float).copy()
+    bin_index[0] = -np.inf
+    bin_index = np.append(bin_index, np.inf)
+    interval_list = []
+    woe_list = []
+    for i in range(len(bin_index) - 1):
+        if bin_index[i] == bin_index[i + 1]:
+            continue
+        else:
+            interval_list.append(pd.Interval(left=bin_index[i], right=bin_index[i + 1], closed='left'))
+            woe_list.append(
+                math.log((bins[0.0][bin_index[i]] / bins[0.0].sum()) / (bins[1.0][bin_index[i]] / bins[1.0].sum())))
+    print(interval_list, woe_list)
+
+    print(bins)
