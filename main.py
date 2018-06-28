@@ -99,17 +99,27 @@ if __name__ == '__main__':
     # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
 
     bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
-    bin_index = bins.index.values.astype(float).copy()
-    bin_index[0] = -np.inf
+    bin_index = bins.index.values.astype(float)
+    # bin_index[0] = -np.inf
     bin_index = np.append(bin_index, np.inf)
     interval_list = []
     woe_list = []
+    max_woe = 20
+    min_woe = -20
     for i in range(len(bin_index) - 1):
         if bin_index[i] == bin_index[i + 1]:
             continue
         else:
             interval_list.append(pd.Interval(left=bin_index[i], right=bin_index[i + 1], closed='left'))
-            woe_list.append(
-                math.log((bins[0.0][bin_index[i]] / bins[0.0].sum()) / (bins[1.0][bin_index[i]] / bins[1.0].sum())))
-    print(interval_list, woe_list)
+            rate_event = bins[0.0][bin_index[i]] / bins[0.0].sum()
+            rate_non_event = bins[1.0][bin_index[i]] / bins[1.0].sum()
+            if rate_event == 0.0:
+                woe_list.append(min_woe)
+            elif rate_non_event == 0.0:
+                woe_list.append(max_woe)
+            else:
+                woe_list.append(
+                    math.log((bins[0.0][bin_index[i]] / bins[0.0].sum()) / (bins[1.0][bin_index[i]] / bins[1.0].sum())))
+    bins['interval'] = interval_list
+    bins['woe'] = woe_list
     print(bins)
