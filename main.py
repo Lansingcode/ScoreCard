@@ -112,5 +112,4 @@ if __name__ == '__main__':
             woe_list.append(
                 math.log((bins[0.0][bin_index[i]] / bins[0.0].sum()) / (bins[1.0][bin_index[i]] / bins[1.0].sum())))
     print(interval_list, woe_list)
-
     print(bins)
