@@ -158,7 +158,7 @@ class WOE:
             res[mask] = (i + 1)
         return res
 
-    def woe_feature(self,x,dict):
+    def woe_feature(self, x, dict):
         new_x = []
         for i in x:
             new_x.append(dict[i])
@@ -180,12 +180,39 @@ class WOE:
     def WOE_MAX(self, woe_max):
         self._WOE_MAX = woe_max
 
+
+def my_woe(bins):
+    bin_index = bins.index.values.astype(float)
+    # bin_index[0] = -np.inf
+    bin_index = np.append(bin_index, np.inf)
+    interval_list = []
+    woe_list = []
+    max_woe = 20
+    min_woe = -20
+    for i in range(len(bin_index) - 1):
+        if bin_index[i] == bin_index[i + 1]:
+            continue
+        else:
+            interval_list.append(pd.Interval(left=bin_index[i], right=bin_index[i + 1], closed='left'))
+            rate_event = bins[0.0][bin_index[i]] / bins[0.0].sum()
+            rate_non_event = bins[1.0][bin_index[i]] / bins[1.0].sum()
+            if rate_event == 0.0:
+                woe_list.append(min_woe)
+            elif rate_non_event == 0.0:
+                woe_list.append(max_woe)
+            else:
+                woe_list.append(math.log(rate_event / rate_non_event))
+    bins['interval'] = interval_list
+    bins['woe'] = woe_list
+    print(bins)
+
+
 if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
     raw_data = pd.read_csv(path)
     # print(raw_data)
-    woe=WOE()
+    woe = WOE()
     # woe_result=woe.woe_single_x(x=raw_data,'SepalLength')
-    ret=pd.cut(raw_data['SepalLength'],5)
+    ret = pd.cut(raw_data['SepalLength'], 5)
     print(ret)
