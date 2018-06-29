@@ -98,4 +98,7 @@ if __name__ == '__main__':
     # print("au值: " + str(auc))
     # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
     bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
-    woe.my_woe(bins)
+
+    bin_woe = woe.my_woe(bins)
+    data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf]))
+    print(data.head(20))

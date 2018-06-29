@@ -183,12 +183,12 @@ class WOE:
 
 def my_woe(bins):
     bin_index = bins.index.values.astype(float)
-    # bin_index[0] = -np.inf
+    bin_index[0] = -np.inf
     bin_index = np.append(bin_index, np.inf)
     interval_list = []
     woe_list = []
-    max_woe = 20
-    min_woe = -20
+    max_woe = 10
+    min_woe = -10
     for i in range(len(bin_index) - 1):
         if bin_index[i] == bin_index[i + 1]:
             continue
@@ -205,6 +205,7 @@ def my_woe(bins):
     bins['interval'] = interval_list
     bins['woe'] = woe_list
     print(bins)
+    return dict(zip(interval_list, woe_list))
 
 
 if __name__ == '__main__':
