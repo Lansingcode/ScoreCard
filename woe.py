@@ -182,6 +182,12 @@ class WOE:
 
 
 def add_woe_col(data, bins):
+    """
+    为指定特征添加一列对应的WOE值
+    :param data:原始数据
+    :param bins:分段信息
+    :return:在原始数据上添加一列
+    """
     fea_name = bins.index.name
     bin_index = bins.index.values.astype(float)
     bin_index[0] = -np.inf
@@ -205,12 +211,10 @@ def add_woe_col(data, bins):
                 woe_list.append(max_woe)
             else:
                 woe_list.append(math.log(rate_event / rate_non_event))
-    bins['interval'] = interval_list
-    bins['woe'] = woe_list
     bin_woe = dict(zip(interval_list, woe_list))
-    data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf])).astype(
-        str)
-    data[bins.index.name + '_woe'] = data[bins.index.name + '_bin'].apply(lambda x: bin_woe[x])
+    data[fea_name + '_bin'] = pd.cut(data[fea_name], bins=np.append(bins.index.values, [np.inf])).astype(str)
+    data[fea_name + '_woe'] = data[fea_name + '_bin'].apply(lambda x: bin_woe[x])
+    del data[fea_name + '_bin']
 
 # if __name__ == '__main__':
 #     path=input('Please input the file path: ')
