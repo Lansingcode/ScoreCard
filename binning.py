@@ -6,7 +6,7 @@ import numpy as np
 from scipy import stats
 
 
-def equal_distance_binning(df, fea_name, bin_count):
+def equal_distance_binning(df, fea_name, target_name, bin_count):
     """
     等距分箱
     :param df:
@@ -15,9 +15,12 @@ def equal_distance_binning(df, fea_name, bin_count):
     :return:
     """
     df[fea_name + '_d'] = pd.cut(df[fea_name], bin_count)
+    fea_count = df[[fea_name + '_d', target_name]].copy().groupby(
+        [fea_name + '_d', target_name]).size().unstack().fillna(0.0)
+    return fea_count
 
 
-def equal_frequency_binning(df, fea_name, bin_count):
+def equal_frequency_binning(df, fea_name, target_name, bin_count):
     """
     等频分箱
     :param df:
@@ -26,35 +29,32 @@ def equal_frequency_binning(df, fea_name, bin_count):
     :return:
     """
     df[fea_name + '_f'] = pd.cut(df[fea_name], bin_count)
+    fea_count = df[[fea_name + '_f', target_name]].copy().groupby(
+        [fea_name + '_f', target_name]).size().unstack().fillna(0.0)
+    return fea_count
 
 
-def auto_binning(df, feature_name, target_name, max_bin_count):
+def auto_binning(df, fea_name, target_name, max_bin_count):
     """
     自动分箱
     :param df:
     :param target_name: 目标变量名
-    :param feature_name:特征变量名称
+    :param fea_name:特征变量名称
     :param max_bin_count:最大分箱数
     :return:
     """
     r = 0
-    good = df[target_name].sum()
-    bad = df[target_name].count() - good
     while np.abs(r) < 1:
-        d1 = pd.DataFrame({'X': df[feature_name],
+        d1 = pd.DataFrame({'X': df[fea_name],
                            'Y': df[target_name],
-                           'Bucket': pd.qcut(df[feature_name], max_bin_count, duplicates='drop')})
-        d2 = d1.groupby('Bucket', as_index=True)
+                           fea_name + '_d': pd.qcut(df[fea_name], max_bin_count, duplicates='drop')})
+        d2 = d1.groupby(fea_name + '_d', as_index=True)
         r, p = stats.spearmanr(d2.mean().X, d2.mean().Y)
         max_bin_count = max_bin_count - 1
-    woe = np.log((d2.mean().Y / (1 - d2.mean().Y)) / (good / bad))
-    woe_dict = woe.to_dict()
-    woe_values = sorted(list(woe_dict.values()))
-    print(woe_values)
-    # 如果存在woe为inf情况，将其替换为不为inf的最大值加一
-    df[feature_name + '_woe'] = d1['Bucket'].apply(lambda x: woe_dict[x]) \
-        .replace(np.inf, woe_values[-2] + 1) \
-        .replace(-np.inf, woe_values[1] - 1)
+
+    fea_count = df[[fea_name + '_d', target_name]].copy().groupby(
+        [fea_name + '_d', target_name]).size().unstack().fillna(0.0)
+    return fea_count
 
 
 def chi2(A):
@@ -78,7 +78,7 @@ def chi2(A):
     return res
 
 
-def chi_merge(df, fea_name, target_name, dis_count):
+def chi_merge(df, fea_name, target_name, max_bin_count):
     """
     chiMerge的主算法
     :param df:数据，dataframe格式
@@ -88,7 +88,7 @@ def chi_merge(df, fea_name, target_name, dis_count):
     :return: 分割点
     """
     fea_count = df[[fea_name, target_name]].copy().groupby([fea_name, target_name]).size().unstack().fillna(0.0)
-    while fea_count.shape[0] > dis_count:
+    while fea_count.shape[0] > max_bin_count:
         chi_list = []
         for i in range(fea_count.shape[0] - 1):
             chi_value = chi2(fea_count.iloc[i:i + 2].values)

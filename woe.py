@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 
 import pandas as pd
-from math import log
 import numpy as np
 import math
 from scipy import stats
