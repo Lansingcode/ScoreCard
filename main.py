@@ -100,6 +100,8 @@ if __name__ == '__main__':
     # print("au值: " + str(auc))
     # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
 
-    bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
-    bin_woe = woe.add_woe_col(data, bins)
+    bin = binning.Bin(data, 'Label', 5)
+    for n in data.columns.values[:-1]:
+        bins = bin.chi_merge(n)
+        woe.add_woe_col(data, bins)
     print(data)
