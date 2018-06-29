@@ -8,6 +8,8 @@ import evaluate
 import modeling
 import woe
 import math
+from pandas import Interval
+from numpy import inf
 
 
 def file_info(file_path):
@@ -99,6 +101,7 @@ if __name__ == '__main__':
     # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
     bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
 
-    bin_woe = woe.my_woe(bins)
-    data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf]))
-    print(data.head(20))
+    bin_woe = woe.my_woe(data,bins)
+    # data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf])).astype(str)
+    # data[bins.index.name + '_woe'] = data[bins.index.name + '_bin'].apply(lambda x: bin_woe[x])
+    print(data)

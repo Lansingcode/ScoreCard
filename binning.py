@@ -105,7 +105,6 @@ def chi_merge(df, fea_name, target_name, dis_count):
             fea_count.loc[current_fea] = fea_count.loc[current_fea] + fea_count.loc[next_fea]
             fea_count.drop([next_fea], inplace=True)
             chi_list.remove(chi_list[chi_min_index + 1])
-    print(fea_count)
     return fea_count
 
 
