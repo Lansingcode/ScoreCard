@@ -181,7 +181,7 @@ class WOE:
         self._WOE_MAX = woe_max
 
 
-def my_woe(data,bins):
+def add_woe_col(data, bins):
     fea_name = bins.index.name
     bin_index = bins.index.values.astype(float)
     bin_index[0] = -np.inf
@@ -196,7 +196,7 @@ def my_woe(data,bins):
         if bin_index[i] == bin_index[i + 1]:
             continue
         else:
-            interval_list.append('('+str(bin_index[i])+', '+str(bin_index[i + 1])+']')
+            interval_list.append('(' + str(bin_index[i]) + ', ' + str(bin_index[i + 1]) + ']')
             rate_event = bins[0.0][bin_index[i]] / bins[0.0].sum()
             rate_non_event = bins[1.0][bin_index[i]] / bins[1.0].sum()
             if rate_event == 0.0:
@@ -207,10 +207,10 @@ def my_woe(data,bins):
                 woe_list.append(math.log(rate_event / rate_non_event))
     bins['interval'] = interval_list
     bins['woe'] = woe_list
-    bin_woe=dict(zip(interval_list, woe_list))
-    data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf])).astype(str)
+    bin_woe = dict(zip(interval_list, woe_list))
+    data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf])).astype(
+        str)
     data[bins.index.name + '_woe'] = data[bins.index.name + '_bin'].apply(lambda x: bin_woe[x])
-
 
 # if __name__ == '__main__':
 #     path=input('Please input the file path: ')

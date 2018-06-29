@@ -93,7 +93,6 @@ def chi_merge(df, fea_name, target_name, dis_count):
         for i in range(fea_count.shape[0] - 1):
             chi_value = chi2(fea_count.iloc[i:i + 2].values)
             chi_list.append([fea_count.index[i], chi_value])
-
         chi_min_index = np.argmin(np.array(chi_list)[:, 1])
         if chi_min_index == len(chi_list) - 1:
             current_fea = chi_list[chi_min_index][0]

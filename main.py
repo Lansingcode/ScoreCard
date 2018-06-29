@@ -99,9 +99,7 @@ if __name__ == '__main__':
     # auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
     # print("au值: " + str(auc))
     # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
-    bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
 
-    bin_woe = woe.my_woe(data,bins)
-    # data[bins.index.name + '_bin'] = pd.cut(data[bins.index.name], bins=np.append(bins.index.values, [np.inf])).astype(str)
-    # data[bins.index.name + '_woe'] = data[bins.index.name + '_bin'].apply(lambda x: bin_woe[x])
+    bins = binning.chi_merge(data, 'SepalLength', 'Label', 5)
+    bin_woe = woe.add_woe_col(data, bins)
     print(data)
