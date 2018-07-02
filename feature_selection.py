@@ -8,6 +8,7 @@ from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_selection import SelectFromModel
+from minepy import MINE
 
 
 def chi2_select(X, y, number):
@@ -24,6 +25,12 @@ def chi2_select(X, y, number):
 
 
 def fea_select(X, y):
+    """
+    使用决策树筛选变量
+    :param X:
+    :param y:
+    :return:
+    """
     clf = DecisionTreeClassifier()
     clf = clf.fit(X, y)
     print(clf.feature_importances_)
@@ -32,5 +39,24 @@ def fea_select(X, y):
     print(X_new)
 
 
-from minepy import MINE
-m = MINE()
+def mi(X, y):
+    """
+    计算互信息
+    :param X:
+    :param y:
+    :return:
+    """
+    mi_dict = {}
+    m = MINE()
+    try:
+        if X.shape[1] > 1:
+            for f in X.columns:
+                m.compute_score(X[f], y)
+                mi_dict[f] = m.mic()
+            print(mi_dict)
+            return mi_dict
+    except:
+        m.compute_score(X, y)
+        mi_dict[X.name] = m.mic()
+        print(mi_dict)
+        return mi_dict

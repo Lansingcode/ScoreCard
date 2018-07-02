@@ -13,7 +13,6 @@ from pandas import Interval
 from numpy import inf
 
 
-
 def file_info(file_path):
     """
     获取文件信息
@@ -79,9 +78,6 @@ def split_data(data_to_split):
     return splited_data
 
 
-
-
-
 if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
@@ -115,3 +111,4 @@ if __name__ == '__main__':
     # print(select_func.transform(data[['SepalLength', 'SepalWidth']]))
 
     feature_selection.fea_select(data[['SepalLength_woe', 'SepalWidth_woe']], data['Label'])
+    feature_selection.mi(data['SepalWidth_woe'], data['Label'])
