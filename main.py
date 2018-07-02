@@ -7,9 +7,11 @@ import binning
 import evaluate
 import modeling
 import woe
+import feature_selection
 import math
 from pandas import Interval
 from numpy import inf
+
 
 
 def file_info(file_path):
@@ -77,6 +79,9 @@ def split_data(data_to_split):
     return splited_data
 
 
+
+
+
 if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
@@ -105,3 +110,8 @@ if __name__ == '__main__':
         bins = bin.chi_merge(n)
         woe.add_woe_col(data, bins)
     print(data)
+
+    # select_func = chi2_select(data[['SepalLength', 'SepalWidth']], data['Label'], 1)
+    # print(select_func.transform(data[['SepalLength', 'SepalWidth']]))
+
+    feature_selection.fea_select(data[['SepalLength_woe', 'SepalWidth_woe']], data['Label'])
