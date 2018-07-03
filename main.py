@@ -14,6 +14,7 @@ from pandas import Interval
 from numpy import inf
 from pprint import pprint
 
+
 def file_info(file_path):
     """
     获取文件信息
@@ -46,20 +47,26 @@ def change_type(df, fea_type_dict):
     print('字段名称对应数字为：')
     for (n, m) in feature_dict.items():
         print(n, m)
-    fea_name = int(input('请输入如需要更改数据类型的字段对应的数字：'))
-    if fea_name not in feature_dict.keys():
-        fea_name = int(input('输入字段名称错误，请重新输入：'))
-        if fea_name not in fea_dict.keys():
-            pass
-    fea_name = feature_dict[fea_name]
+    if_change = input('是否需要修改字段类型？(y/n)')
+    if if_change == 'y':
+        fea_name = int(input('请输入需要更改数据类型的字段对应的数字：'))
+        if fea_name not in feature_dict.keys():
+            fea_name = int(input('输入字段名称错误，请重新输入：'))
+            if fea_name not in fea_dict.keys():
+                pass
+        fea_name = feature_dict[fea_name]
 
-    target_type = int(input('请输入目标类型对应的数字(1: 浮点型(float64)，2: 整型(int64)，3: 字符型(str)：'))
-    if target_type not in type_dict.keys():
         target_type = int(input('请输入目标类型对应的数字(1: 浮点型(float64)，2: 整型(int64)，3: 字符型(str)：'))
         if target_type not in type_dict.keys():
-            pass
-    target_type = type_dict[target_type]
-    df[fea_name] = df[fea_name].astype(target_type)
+            target_type = int(input('请输入目标类型对应的数字(1: 浮点型(float64)，2: 整型(int64)，3: 字符型(str)：'))
+            if target_type not in type_dict.keys():
+                pass
+        target_type = type_dict[target_type]
+        df[fea_name] = df[fea_name].astype(target_type)
+    elif if_change == 'n':
+        pass
+    else:
+        pass
 
 
 def split_data(data_to_split, ratio):
@@ -82,10 +89,12 @@ if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
     fea_dict, data = file_info(path)
+    print('字段名', '数据类型', '数据总量', '缺失值个数')
     pprint(fea_dict)
     data = data.fillna(0.0)
-    # change_type(data, fea_dict)
-    # print(data.dtypes)
+
+    change_type(data, fea_dict)
+    print(data.dtypes)
 
     bin = binning.Bin(data, 'Label', 5)
     for n in data.columns.values[:-1]:
@@ -95,12 +104,13 @@ if __name__ == '__main__':
     # 单变量ar值计算
     # ar = ARUtil.cal_ar(data['SepalWidth_woe'], data['Label'])
 
-    train_data, test_data = split_data(data,0.7)
+    train_data, test_data = split_data(data, 0.7)
     model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 0.5, 100, 10)
+    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model,
+                                         0.5, 100, 10)
     pprint(list(zip(test_data['Label'].values, predict_score)))
     auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
-    print("au值: " + str(auc))
+    print("auc值: " + str(auc))
     evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
 
 
@@ -110,4 +120,3 @@ if __name__ == '__main__':
 
     # feature_selection.fea_select(data[['SepalLength_woe', 'SepalWidth_woe']], data['Label'])
     # feature_selection.mi(data['SepalWidth_woe'], data['Label'])
-
