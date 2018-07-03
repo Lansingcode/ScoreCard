@@ -12,7 +12,7 @@ import feature_selection
 import math
 from pandas import Interval
 from numpy import inf
-
+from pprint import pprint
 
 def file_info(file_path):
     """
@@ -82,34 +82,32 @@ if __name__ == '__main__':
     # path=input('Please input the file path: ')
     path = 'iris.csv'
     fea_dict, data = file_info(path)
+    pprint(fea_dict)
     data = data.fillna(0.0)
     # change_type(data, fea_dict)
     # print(data.dtypes)
-
-    # print(t[0].shape)
-    # print(t[1].shape)
-    # binning.auto_binning(data, 'SepalLength','Label', 10)
-    # binning.auto_binning(data, 'PetalLength','Label', 10)
-    # binning.auto_binning(data, 'PetalWidth','Label',  10)
-    # train_data, test_data = split_data(data)
-    # model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    # predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model,
-    #                                      0.5, 100, 10)
-    # print(list(zip(test_data['Label'].values, predict_score)))
-    #
-    # auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
-    # print("au值: " + str(auc))
-    # evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
 
     bin = binning.Bin(data, 'Label', 5)
     for n in data.columns.values[:-1]:
         bins = bin.chi_merge(n)
         woe.add_woe_col(data, bins)
-    print(data)
+
+    # 单变量ar值计算
+    # ar = ARUtil.cal_ar(data['SepalWidth_woe'], data['Label'])
+
+    train_data, test_data = split_data(data,0.7)
+    model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
+    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 0.5, 100, 10)
+    pprint(list(zip(test_data['Label'].values, predict_score)))
+    auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
+    print("au值: " + str(auc))
+    evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
+
+
 
     # select_func = feature_selection.fea_select(data[['SepalLength', 'SepalWidth']], data['Label'], 1)
     # print(select_func.transform(data[['SepalLength', 'SepalWidth']]))
 
     # feature_selection.fea_select(data[['SepalLength_woe', 'SepalWidth_woe']], data['Label'])
     # feature_selection.mi(data['SepalWidth_woe'], data['Label'])
-    ar = ARUtil.cal_ar(data['SepalWidth_woe'], data['Label'])
+
