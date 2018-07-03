@@ -37,6 +37,7 @@ def fea_select(X, y):
     model = SelectFromModel(clf, prefit=True)
     X_new = model.transform(X)
     print(X_new)
+    return X_new
 
 
 def mi(X, y):

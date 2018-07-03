@@ -7,6 +7,7 @@ import binning
 import evaluate
 import modeling
 import woe
+import ARUtil
 import feature_selection
 import math
 from pandas import Interval
@@ -61,14 +62,13 @@ def change_type(df, fea_type_dict):
     df[fea_name] = df[fea_name].astype(target_type)
 
 
-def split_data(data_to_split):
+def split_data(data_to_split, ratio):
     """
     数据分割
     :param data_to_split:带分割数据
+    :param ratio:数据分割比例
     :return: （数据集1，数据集2）
     """
-    # ratio = float(input('请输入数据分割比例：'))
-    ratio = 0.8
     data_count = data_to_split.shape[0]
     selected_count = int(data_count * ratio)
     if selected_count > 0:
@@ -107,8 +107,9 @@ if __name__ == '__main__':
         woe.add_woe_col(data, bins)
     print(data)
 
-    # select_func = chi2_select(data[['SepalLength', 'SepalWidth']], data['Label'], 1)
+    # select_func = feature_selection.fea_select(data[['SepalLength', 'SepalWidth']], data['Label'], 1)
     # print(select_func.transform(data[['SepalLength', 'SepalWidth']]))
 
-    feature_selection.fea_select(data[['SepalLength_woe', 'SepalWidth_woe']], data['Label'])
-    feature_selection.mi(data['SepalWidth_woe'], data['Label'])
+    # feature_selection.fea_select(data[['SepalLength_woe', 'SepalWidth_woe']], data['Label'])
+    # feature_selection.mi(data['SepalWidth_woe'], data['Label'])
+    ar = ARUtil.cal_ar(data['SepalWidth_woe'], data['Label'])

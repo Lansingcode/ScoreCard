@@ -213,7 +213,12 @@ def add_woe_col(data, bins):
     bin_woe = dict(zip(interval_list, woe_list))
     data[fea_name + '_bin'] = pd.cut(data[fea_name], bins=np.append(bins.index.values, [np.inf])).astype(str)
     data[fea_name + '_woe'] = data[fea_name + '_bin'].apply(lambda x: bin_woe[x])
-    del data[fea_name + '_bin']
+    if fea_name + '_bin' in data.columns.values:
+        del data[fea_name + '_bin']
+    if fea_name + '_d' in data.columns.values:
+        del data[fea_name + '_d']
+    if fea_name + '_f' in data.columns.values:
+        del data[fea_name + '_f']
 
 # if __name__ == '__main__':
 #     path=input('Please input the file path: ')

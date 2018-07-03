@@ -32,3 +32,14 @@ def roc(model, test_data):
     plt.ylabel("True Positive Rate")
     plt.title("ROC Diagram")
     plt.show()
+
+
+def correlation_coef(data):
+    """
+    计算相关系数
+    :param data:
+    :return:
+    """
+    correlation = data.corr()
+    print(correlation)
+    return correlation

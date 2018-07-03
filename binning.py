@@ -15,53 +15,49 @@ class Bin:
     def equal_distance_binning(self, fea_name):
         """
         等距分箱
-        :param df:
         :param fea_name:
-        :param target_name:
-        :param bin_count:
         :return:
         """
 
         self.df[fea_name + '_d'] = pd.cut(self.df[fea_name], self.bin_count)
         fea_count = self.df[[fea_name + '_d', self.target_name]].copy().groupby(
             [fea_name + '_d', self.target_name]).size().unstack().fillna(0.0)
+        fea_count.index = fea_count.index.map(lambda x: x.left)
+        fea_count.index.name = fea_name
         return fea_count
 
     def equal_frequency_binning(self, fea_name):
         """
         等频分箱
-        :param df:
         :param fea_name:
-        :param target_name:
-        :param bin_count:
         :return:
         """
         self.df[fea_name + '_f'] = pd.cut(self.df[fea_name], self.bin_count)
         fea_count = self.df[[fea_name + '_f', self.target_name]].copy().groupby(
             [fea_name + '_f', self.target_name]).size().unstack().fillna(0.0)
+        fea_count.index = fea_count.index.map(lambda x: x.left)
+        fea_count.index.name = fea_name
         return fea_count
 
     def auto_binning(self, fea_name):
         """
         自动分箱
-        :param df:
-        :param target_name: 目标变量名
         :param fea_name:特征变量名称
-        :param max_bin_count:最大分箱数
         :return:
         """
         r = 0
         while np.abs(r) < 1:
             d1 = pd.DataFrame({'X': self.df[fea_name],
                                'Y': self.df[self.target_name],
-                               fea_name + '_d': pd.qcut(self.df[fea_name], self.bin_count,
-                                                        duplicates='drop')})
+                               fea_name + '_d': pd.qcut(self.df[fea_name], self.bin_count, duplicates='drop')})
             d2 = d1.groupby(fea_name + '_d', as_index=True)
             r, p = stats.spearmanr(d2.mean().X, d2.mean().Y)
-            max_bin_count = max_bin_count - 1
+            self.bin_count = self.bin_count - 1
 
         fea_count = self.df[[fea_name + '_d', self.target_name]].copy().groupby(
             [fea_name + '_d', self.target_name]).size().unstack().fillna(0.0)
+        fea_count.index = fea_count.index.map(lambda x: x.left)
+        fea_count.index.name = fea_name
         return fea_count
 
     def chi2(self, A):
@@ -87,10 +83,7 @@ class Bin:
     def chi_merge(self, fea_name):
         """
         chiMerge的主算法
-        :param df:数据，dataframe格式
         :param fea_name:需要进行分段的特征名称
-        :param target_name:目标变量名称
-        :param dis_count:最大分组数
         :return: 分割点
         """
         fea_count = self.df[[fea_name, self.target_name]].copy().groupby(
