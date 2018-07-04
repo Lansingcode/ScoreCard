@@ -11,9 +11,9 @@ def model(data, fea_list, target):
     return cls
 
 
-def score_trans(data, model, p, scaled_value, pdo):
-    b = pdo / np.log(2)
-    a = scaled_value + b * np.log(p)
+def score_trans(data, model, scaled_value, pdo):
+    b = -pdo / np.log(2)
+    a = scaled_value
     p = model.predict_proba(data)[:, 1]
     score = a - np.log(p / (1 - p)) * b
 

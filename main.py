@@ -106,8 +106,7 @@ if __name__ == '__main__':
 
     train_data, test_data = split_data(data, 0.7)
     model = modeling.model(train_data, ['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe'], 'Label')
-    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model,
-                                         0.5, 100, 10)
+    predict_score = modeling.score_trans(test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe']], model, 300, 25)
     pprint(list(zip(test_data['Label'].values, predict_score)))
     auc = evaluate.auc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
     print("auc值: " + str(auc))
