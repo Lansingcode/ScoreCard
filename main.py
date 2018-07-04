@@ -7,7 +7,7 @@ import binning
 import evaluate
 import modeling
 import woe
-import ARUtil
+import feature_index
 import feature_selection
 import math
 from pandas import Interval

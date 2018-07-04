@@ -235,6 +235,16 @@ def cal_ar(X, y):
     print('ar值：%s' % str(ar))
     return ar
 
+def correlation_coef(data):
+    """
+    计算相关系数
+    :param data:
+    :return:
+    """
+    correlation = data.corr()
+    print(correlation)
+    return correlation
+
 # def run():
 #     ar = ARFilter()
 # ar.train_cal_input()

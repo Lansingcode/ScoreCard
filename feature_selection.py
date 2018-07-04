@@ -3,12 +3,13 @@ __author__ = 'xujia'
 
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-from sklearn.feature_selection import RFE
-from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.feature_selection import SelectFromModel
 from minepy import MINE
+
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
 
 def chi2_select(X, y, number):

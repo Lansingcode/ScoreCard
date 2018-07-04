@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 def auc(model, test_data):
     """
-
+    AUC
     :param model:模型
     :param test_data:测试数据，dataframe格式，第一列至倒数第二列为特征字段，最后一列为目标字段
     :return:auc值
@@ -17,7 +17,7 @@ def auc(model, test_data):
 
 def roc(model, test_data):
     """
-
+    ROC
     :param model:模型
     :param test_data:测试数据，dataframe格式，第一列至倒数第二列为特征字段，最后一列为目标字段
     :return:roc曲线
@@ -34,12 +34,4 @@ def roc(model, test_data):
     plt.show()
 
 
-def correlation_coef(data):
-    """
-    计算相关系数
-    :param data:
-    :return:
-    """
-    correlation = data.corr()
-    print(correlation)
-    return correlation
+
