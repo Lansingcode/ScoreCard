@@ -112,8 +112,6 @@ if __name__ == '__main__':
     print("auc值: " + str(auc))
     evaluate.roc(model, test_data[['SepalLength_woe', 'PetalLength_woe', 'PetalWidth_woe', 'Label']])
 
-
-
     # select_func = feature_selection.fea_select(data[['SepalLength', 'SepalWidth']], data['Label'], 1)
     # print(select_func.transform(data[['SepalLength', 'SepalWidth']]))
 
