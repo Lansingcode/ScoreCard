@@ -189,7 +189,6 @@ def add_woe_col(data, bins):
     """
     fea_name = bins.index.name
     bin_index = bins.index.values.astype(float)
-    bin_index[0] = -np.inf
     bins.index = bin_index
     bins.index.name = fea_name
     bin_index = np.append(bin_index, np.inf)
@@ -201,7 +200,7 @@ def add_woe_col(data, bins):
         if bin_index[i] == bin_index[i + 1]:
             continue
         else:
-            interval_list.append('(' + str(bin_index[i]) + ', ' + str(bin_index[i + 1]) + ']')
+            interval_list.append(bins['bin'][bin_index[i]])
             rate_event = bins[0.0][bin_index[i]] / bins[0.0].sum()
             rate_non_event = bins[1.0][bin_index[i]] / bins[1.0].sum()
             if rate_event == 0.0:

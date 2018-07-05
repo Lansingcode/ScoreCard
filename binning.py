@@ -104,6 +104,10 @@ class Bin:
                 fea_count.loc[current_fea] = fea_count.loc[current_fea] + fea_count.loc[next_fea]
                 fea_count.drop([next_fea], inplace=True)
                 chi_list.remove(chi_list[chi_min_index + 1])
+        fea_count.index = np.append([-np.inf], fea_count.index.values[1:])
+        fea_count['bin'] = pd.cut(np.append(fea_count.index.values, [np.inf]),
+                                  bins=np.append(fea_count.index.values, [np.inf]))[1:].astype(str)
+        fea_count.index.name = fea_name
         return fea_count
 
 #
